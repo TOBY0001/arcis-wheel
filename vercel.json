@@ -1,0 +1,13 @@
+{
+  "crons": [
+    {
+      "path": "/api/leaderboard/reset",
+      "schedule": "0 0 * * 6"
+    },
+    {
+      "path": "/api/player/reset-weekly",
+      "schedule": "0 0 * * 6"
+    }
+  ]
+}
+
