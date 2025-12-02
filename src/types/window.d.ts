@@ -13,6 +13,7 @@ declare global {
     __WHEEL_CLAIM_LISTENER_BOUND__?: boolean;
     __WHEEL_KEYDOWN_LISTENER_BOUND__?: boolean;
     __WHEEL_COOLDOWN_TIMER_STARTED__?: boolean;
+    __WHEEL_SPIN_RESET_CHECKER_STARTED__?: boolean;
     __WHEEL_RESIZE_LISTENER_BOUND__?: boolean;
     __WALLET_EVENT_LISTENER_BOUND__?: boolean;
     handleSpinClick?: () => Promise<void>;
