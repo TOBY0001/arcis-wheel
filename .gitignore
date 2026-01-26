@@ -49,7 +49,7 @@ context.txt
 console.txt
 keypairbackup.txt
 updates.txt
-id.txt
+authorityid.txt
 
 # docker (not needed for Vercel)
 Dockerfile

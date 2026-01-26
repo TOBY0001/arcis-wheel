@@ -7,19 +7,38 @@ import IDL_JSON from '../idl/encrypted_wheel.json';
 const IDL = IDL_JSON as Idl;
 
 // Program ID deployed to devnet
-export const PROGRAM_ID = new PublicKey('FGJU8MoGAm61LQNZekvMhacoVPzmvcjh16kXaTbqqbM6');
+export const PROGRAM_ID = new PublicKey('G6sRoE2RjEqgpX5Yzr3j4ogxQMLxUgW3uAV183cjpujm');
 
-// Arcium Program ID
-export const ARCIUM_PROGRAM_ID = new PublicKey('BKck65TgoKRokMjQM3datB9oRwJ8rAj2jxPXvHXUvcL6');
+// Arcium Program ID (v0.6.4)
+export const ARCIUM_PROGRAM_ID = new PublicKey('Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ');
 
-// Arcium Clock Account Address
-export const ARCIUM_CLOCK_ACCOUNT_ADDRESS = new PublicKey('FHriyvoZotYiFnbUzKFjzRSb2NiaC8RPWY7jtKuKhg65');
+// Arcium Clock Account Address (v0.6.4)
+// According to migration docs, these addresses may have changed with the new program ID
+// Derive from Arcium program ID using the correct seed
+export function getArciumClockAccountAddress(): PublicKey {
+  // Clock account is a PDA with seed "ClockAccount" under Arcium program
+  const [clockPDA] = PublicKey.findProgramAddressSync(
+    [Buffer.from('ClockAccount')],
+    ARCIUM_PROGRAM_ID
+  );
+  return clockPDA;
+}
 
-// Fixed Pool Account Address from IDL
-export const ARCIUM_POOL_ACCOUNT_ADDRESS = new PublicKey('7MGSS4iKNM4sVib7bDZDJhVqB6EcchPwVnTKenCY1jt3');
+export function getArciumFeePoolAccountAddress(): PublicKey {
+  // FeePool account is a PDA with seed "FeePool" under Arcium program  
+  const [poolPDA] = PublicKey.findProgramAddressSync(
+    [Buffer.from('FeePool')],
+    ARCIUM_PROGRAM_ID
+  );
+  return poolPDA;
+}
 
-// Your deployed cluster ID (where your program is deployed)
-export const CLUSTER_ID = 3726127828;
+// Export constants using the derived addresses for v0.6.4
+export const ARCIUM_CLOCK_ACCOUNT_ADDRESS = getArciumClockAccountAddress();
+export const ARCIUM_POOL_ACCOUNT_ADDRESS = getArciumFeePoolAccountAddress();
+
+// Your deployed cluster ID (where your program is deployed) - v0.5.1 cluster offset
+export const CLUSTER_ID = 456;
 
 /**
  * Get the program instance
@@ -48,7 +67,7 @@ import {
   getCompDefAccOffset,
   getClusterAccAddress,
   getArciumAccountBaseSeed,
-  getArciumProgAddress,
+  getArciumProgramId,
 } from '@arcium-hq/client';
 
 export function getMXEPDA(): [PublicKey, number] {
@@ -56,15 +75,15 @@ export function getMXEPDA(): [PublicKey, number] {
 }
 
 export function getMempoolPDA(): [PublicKey, number] {
-  return [getMempoolAccAddress(PROGRAM_ID), 0];
+  return [getMempoolAccAddress(CLUSTER_ID), 0];
 }
 
 export function getExecpoolPDA(): [PublicKey, number] {
-  return [getExecutingPoolAccAddress(PROGRAM_ID), 0];
+  return [getExecutingPoolAccAddress(CLUSTER_ID), 0];
 }
 
 export function getComputationPDA(offset: BN): [PublicKey, number] {
-  return [getComputationAccAddress(PROGRAM_ID, offset), 0];
+  return [getComputationAccAddress(CLUSTER_ID, offset), 0];
 }
 
 export function getCompDefPDA(compDefName: string): [PublicKey, number] {
@@ -74,7 +93,7 @@ export function getCompDefPDA(compDefName: string): [PublicKey, number] {
   
   const [compDefPDA] = PublicKey.findProgramAddressSync(
     [baseSeedCompDefAcc, PROGRAM_ID.toBuffer(), offsetUint8Array],
-    getArciumProgAddress()
+    getArciumProgramId()
   );
   
   return [compDefPDA, 0];
@@ -85,11 +104,11 @@ export function getClusterPDA(): [PublicKey, number] {
 }
 
 /**
- * Get Signer PDA (SignerAccount seed)
+ * Get Signer PDA (ArciumSignerAccount seed)
  */
 export function getSignerPDA(): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
-    [Buffer.from('SignerAccount')],
+    [Buffer.from('ArciumSignerAccount')],
     PROGRAM_ID
   );
 }

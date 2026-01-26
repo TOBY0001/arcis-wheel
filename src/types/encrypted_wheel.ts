@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/encrypted_wheel.json`.
  */
 export type EncryptedWheel = {
-  "address": "FGJU8MoGAm61LQNZekvMhacoVPzmvcjh16kXaTbqqbM6",
+  "address": "G6sRoE2RjEqgpX5Yzr3j4ogxQMLxUgW3uAV183cjpujm",
   "metadata": {
     "name": "encryptedWheel",
     "version": "0.1.0",
@@ -16,7 +16,8 @@ export type EncryptedWheel = {
     {
       "name": "initSpinCompDef",
       "docs": [
-        "Initializes the computation definition for the wheel spin operation."
+        "Initializes the computation definition for the wheel spin operation.",
+        "Uses offchain storage for the circuit (recommended for circuits > 100KB)"
       ],
       "discriminator": [
         153,
@@ -47,7 +48,7 @@ export type EncryptedWheel = {
         },
         {
           "name": "arciumProgram",
-          "address": "BKck65TgoKRokMjQM3datB9oRwJ8rAj2jxPXvHXUvcL6"
+          "address": "Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ"
         },
         {
           "name": "systemProgram",
@@ -85,6 +86,12 @@ export type EncryptedWheel = {
               {
                 "kind": "const",
                 "value": [
+                  65,
+                  114,
+                  99,
+                  105,
+                  117,
+                  109,
                   83,
                   105,
                   103,
@@ -128,11 +135,12 @@ export type EncryptedWheel = {
         {
           "name": "poolAccount",
           "writable": true,
-          "address": "7MGSS4iKNM4sVib7bDZDJhVqB6EcchPwVnTKenCY1jt3"
+          "address": "G2sRWJvi3xoyh5k2gY49eG9L8YhAEWQPtNb1zb1GXTtC"
         },
         {
           "name": "clockAccount",
-          "address": "FHriyvoZotYiFnbUzKFjzRSb2NiaC8RPWY7jtKuKhg65"
+          "writable": true,
+          "address": "7EbMUTLo5DjdzbN7s8BXeZwXzEwNQb1hScfRvWg8a6ot"
         },
         {
           "name": "systemProgram",
@@ -140,7 +148,7 @@ export type EncryptedWheel = {
         },
         {
           "name": "arciumProgram",
-          "address": "BKck65TgoKRokMjQM3datB9oRwJ8rAj2jxPXvHXUvcL6"
+          "address": "Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ"
         }
       ],
       "args": [
@@ -185,10 +193,21 @@ export type EncryptedWheel = {
       "accounts": [
         {
           "name": "arciumProgram",
-          "address": "BKck65TgoKRokMjQM3datB9oRwJ8rAj2jxPXvHXUvcL6"
+          "address": "Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ"
         },
         {
           "name": "compDefAccount"
+        },
+        {
+          "name": "clusterAccount",
+          "writable": true
+        },
+        {
+          "name": "computationAccount",
+          "writable": true
+        },
+        {
+          "name": "mxeAccount"
         },
         {
           "name": "instructionsSysvar",
@@ -200,7 +219,7 @@ export type EncryptedWheel = {
           "name": "output",
           "type": {
             "defined": {
-              "name": "computationOutputs",
+              "name": "signedComputationOutputs",
               "generics": [
                 {
                   "kind": "type",
@@ -218,6 +237,19 @@ export type EncryptedWheel = {
     }
   ],
   "accounts": [
+    {
+      "name": "arciumSignerAccount",
+      "discriminator": [
+        214,
+        157,
+        122,
+        114,
+        117,
+        44,
+        214,
+        74
+      ]
+    },
     {
       "name": "clockAccount",
       "discriminator": [
@@ -282,19 +314,6 @@ export type EncryptedWheel = {
         17,
         117
       ]
-    },
-    {
-      "name": "signerAccount",
-      "discriminator": [
-        127,
-        212,
-        7,
-        180,
-        17,
-        50,
-        249,
-        193
-      ]
     }
   ],
   "events": [
@@ -345,6 +364,32 @@ export type EncryptedWheel = {
                 "name": "epoch"
               }
             }
+          }
+        ]
+      }
+    },
+    {
+      "name": "arciumSignerAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bn254g2blsPublicKey",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "array": [
+              "u8",
+              64
+            ]
           }
         ]
       }
@@ -432,14 +477,24 @@ export type EncryptedWheel = {
         "kind": "struct",
         "fields": [
           {
+            "name": "tdInfo",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "nodeMetadata"
+                }
+              }
+            }
+          },
+          {
             "name": "authority",
             "type": {
               "option": "pubkey"
             }
           },
           {
-            "name": "maxSize",
-            "type": "u32"
+            "name": "clusterSize",
+            "type": "u16"
           },
           {
             "name": "activation",
@@ -475,12 +530,6 @@ export type EncryptedWheel = {
             }
           },
           {
-            "name": "mxes",
-            "type": {
-              "vec": "pubkey"
-            }
-          },
-          {
             "name": "nodes",
             "type": {
               "vec": {
@@ -493,10 +542,24 @@ export type EncryptedWheel = {
           {
             "name": "pendingNodes",
             "type": {
-              "vec": {
-                "defined": {
-                  "name": "nodeRef"
-                }
+              "vec": "u32"
+            }
+          },
+          {
+            "name": "blsPublicKey",
+            "type": {
+              "defined": {
+                "name": "setUnset",
+                "generics": [
+                  {
+                    "kind": "type",
+                    "type": {
+                      "defined": {
+                        "name": "bn254g2blsPublicKey"
+                      }
+                    }
+                  }
+                ]
               }
             }
           },
@@ -520,10 +583,6 @@ export type EncryptedWheel = {
             "type": {
               "option": "pubkey"
             }
-          },
-          {
-            "name": "finalizeDuringCallback",
-            "type": "bool"
           },
           {
             "name": "cuAmount",
@@ -571,31 +630,6 @@ export type EncryptedWheel = {
                 "name": "computationSignature"
               }
             }
-          }
-        ]
-      }
-    },
-    {
-      "name": "computationOutputs",
-      "generics": [
-        {
-          "kind": "type",
-          "name": "o"
-        }
-      ],
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "success",
-            "fields": [
-              {
-                "generic": "o"
-              }
-            ]
-          },
-          {
-            "name": "failure"
           }
         ]
       }
@@ -662,6 +696,12 @@ export type EncryptedWheel = {
         "variants": [
           {
             "name": "mxeKeygen"
+          },
+          {
+            "name": "mxeKeyRecoveryInit"
+          },
+          {
+            "name": "mxeKeyRecoveryFinalize"
           }
         ]
       }
@@ -675,22 +715,44 @@ export type EncryptedWheel = {
         "kind": "struct",
         "fields": [
           {
-            "name": "authority",
-            "type": {
-              "option": "pubkey"
-            }
-          },
-          {
             "name": "cluster",
             "type": {
               "option": "u32"
             }
           },
           {
-            "name": "x25519Pubkey",
+            "name": "keygenOffset",
+            "type": "u64"
+          },
+          {
+            "name": "keyRecoveryInitOffset",
+            "type": "u64"
+          },
+          {
+            "name": "mxeProgramId",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "utilityPubkeys",
             "type": {
               "defined": {
-                "name": "x25519Pubkey"
+                "name": "setUnset",
+                "generics": [
+                  {
+                    "kind": "type",
+                    "type": {
+                      "defined": {
+                        "name": "utilityPubkeys"
+                      }
+                    }
+                  }
+                ]
               }
             }
           },
@@ -713,7 +775,65 @@ export type EncryptedWheel = {
             }
           },
           {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "mxeStatus"
+              }
+            }
+          },
+          {
             "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mxeStatus",
+      "docs": [
+        "The status of an MXE."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "active"
+          },
+          {
+            "name": "recovery"
+          }
+        ]
+      }
+    },
+    {
+      "name": "nodeMetadata",
+      "docs": [
+        "location as [ISO 3166-1 alpha-2](https://www.iso.org/iso-3166-country-codes.html) country code"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ip",
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          },
+          {
+            "name": "peerId",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "location",
             "type": "u8"
           }
         ]
@@ -814,10 +934,28 @@ export type EncryptedWheel = {
             "name": "ciphertext"
           },
           {
-            "name": "arcisPubkey"
+            "name": "arcisX25519Pubkey"
           },
           {
             "name": "plaintextFloat"
+          },
+          {
+            "name": "plaintextPoint"
+          },
+          {
+            "name": "plaintextI8"
+          },
+          {
+            "name": "plaintextI16"
+          },
+          {
+            "name": "plaintextI32"
+          },
+          {
+            "name": "plaintextI64"
+          },
+          {
+            "name": "plaintextI128"
           }
         ]
       }
@@ -856,7 +994,7 @@ export type EncryptedWheel = {
             "name": "ciphertext"
           },
           {
-            "name": "arcisPubkey"
+            "name": "arcisX25519Pubkey"
           },
           {
             "name": "arcisSignature"
@@ -865,10 +1003,60 @@ export type EncryptedWheel = {
             "name": "plaintextFloat"
           },
           {
-            "name": "manticoreAlgo"
+            "name": "plaintextI8"
           },
           {
-            "name": "inputDataset"
+            "name": "plaintextI16"
+          },
+          {
+            "name": "plaintextI32"
+          },
+          {
+            "name": "plaintextI64"
+          },
+          {
+            "name": "plaintextI128"
+          },
+          {
+            "name": "plaintextPoint"
+          }
+        ]
+      }
+    },
+    {
+      "name": "setUnset",
+      "docs": [
+        "Utility struct to store a value that needs to be set by a certain number of participants (keys",
+        "in our case). Once all participants have set the value, the value is considered set and we only",
+        "store it once."
+      ],
+      "generics": [
+        {
+          "kind": "type",
+          "name": "t"
+        }
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "set",
+            "fields": [
+              {
+                "generic": "t"
+              }
+            ]
+          },
+          {
+            "name": "unset",
+            "fields": [
+              {
+                "generic": "t"
+              },
+              {
+                "vec": "bool"
+              }
+            ]
           }
         ]
       }
@@ -918,13 +1106,40 @@ export type EncryptedWheel = {
       }
     },
     {
-      "name": "signerAccount",
+      "name": "signedComputationOutputs",
+      "generics": [
+        {
+          "kind": "type",
+          "name": "o"
+        }
+      ],
       "type": {
-        "kind": "struct",
-        "fields": [
+        "kind": "enum",
+        "variants": [
           {
-            "name": "bump",
-            "type": "u8"
+            "name": "success",
+            "fields": [
+              {
+                "generic": "o"
+              },
+              {
+                "array": [
+                  "u8",
+                  64
+                ]
+              }
+            ]
+          },
+          {
+            "name": "failure"
+          },
+          {
+            "name": "markerForIdlBuildDoNotUseThis",
+            "fields": [
+              {
+                "generic": "o"
+              }
+            ]
           }
         ]
       }
@@ -992,34 +1207,45 @@ export type EncryptedWheel = {
       }
     },
     {
-      "name": "x25519Pubkey",
+      "name": "utilityPubkeys",
       "type": {
-        "kind": "enum",
-        "variants": [
+        "kind": "struct",
+        "fields": [
           {
-            "name": "set",
-            "fields": [
-              {
-                "array": [
-                  "u8",
-                  32
-                ]
-              }
-            ]
+            "name": "x25519Pubkey",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
           },
           {
-            "name": "unset",
-            "fields": [
-              {
-                "array": [
-                  "u8",
-                  32
-                ]
-              },
-              {
-                "vec": "bool"
-              }
-            ]
+            "name": "ed25519VerifyingKey",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "elgamalPubkey",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "pubkeyValidityProof",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
           }
         ]
       }

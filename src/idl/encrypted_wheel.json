@@ -1,5 +1,5 @@
 {
-  "address": "FGJU8MoGAm61LQNZekvMhacoVPzmvcjh16kXaTbqqbM6",
+  "address": "G6sRoE2RjEqgpX5Yzr3j4ogxQMLxUgW3uAV183cjpujm",
   "metadata": {
     "name": "encrypted_wheel",
     "version": "0.1.0",
@@ -10,7 +10,8 @@
     {
       "name": "init_spin_comp_def",
       "docs": [
-        "Initializes the computation definition for the wheel spin operation."
+        "Initializes the computation definition for the wheel spin operation.",
+        "Uses offchain storage for the circuit (recommended for circuits > 100KB)"
       ],
       "discriminator": [
         153,
@@ -41,7 +42,7 @@
         },
         {
           "name": "arcium_program",
-          "address": "BKck65TgoKRokMjQM3datB9oRwJ8rAj2jxPXvHXUvcL6"
+          "address": "Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ"
         },
         {
           "name": "system_program",
@@ -79,6 +80,12 @@
               {
                 "kind": "const",
                 "value": [
+                  65,
+                  114,
+                  99,
+                  105,
+                  117,
+                  109,
                   83,
                   105,
                   103,
@@ -122,11 +129,12 @@
         {
           "name": "pool_account",
           "writable": true,
-          "address": "7MGSS4iKNM4sVib7bDZDJhVqB6EcchPwVnTKenCY1jt3"
+          "address": "G2sRWJvi3xoyh5k2gY49eG9L8YhAEWQPtNb1zb1GXTtC"
         },
         {
           "name": "clock_account",
-          "address": "FHriyvoZotYiFnbUzKFjzRSb2NiaC8RPWY7jtKuKhg65"
+          "writable": true,
+          "address": "7EbMUTLo5DjdzbN7s8BXeZwXzEwNQb1hScfRvWg8a6ot"
         },
         {
           "name": "system_program",
@@ -134,7 +142,7 @@
         },
         {
           "name": "arcium_program",
-          "address": "BKck65TgoKRokMjQM3datB9oRwJ8rAj2jxPXvHXUvcL6"
+          "address": "Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ"
         }
       ],
       "args": [
@@ -179,10 +187,21 @@
       "accounts": [
         {
           "name": "arcium_program",
-          "address": "BKck65TgoKRokMjQM3datB9oRwJ8rAj2jxPXvHXUvcL6"
+          "address": "Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ"
         },
         {
           "name": "comp_def_account"
+        },
+        {
+          "name": "cluster_account",
+          "writable": true
+        },
+        {
+          "name": "computation_account",
+          "writable": true
+        },
+        {
+          "name": "mxe_account"
         },
         {
           "name": "instructions_sysvar",
@@ -194,7 +213,7 @@
           "name": "output",
           "type": {
             "defined": {
-              "name": "ComputationOutputs",
+              "name": "SignedComputationOutputs",
               "generics": [
                 {
                   "kind": "type",
@@ -212,6 +231,19 @@
     }
   ],
   "accounts": [
+    {
+      "name": "ArciumSignerAccount",
+      "discriminator": [
+        214,
+        157,
+        122,
+        114,
+        117,
+        44,
+        214,
+        74
+      ]
+    },
     {
       "name": "ClockAccount",
       "discriminator": [
@@ -276,19 +308,6 @@
         17,
         117
       ]
-    },
-    {
-      "name": "SignerAccount",
-      "discriminator": [
-        127,
-        212,
-        7,
-        180,
-        17,
-        50,
-        249,
-        193
-      ]
     }
   ],
   "events": [
@@ -339,6 +358,32 @@
                 "name": "Epoch"
               }
             }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ArciumSignerAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BN254G2BLSPublicKey",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "array": [
+              "u8",
+              64
+            ]
           }
         ]
       }
@@ -426,14 +471,24 @@
         "kind": "struct",
         "fields": [
           {
+            "name": "td_info",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "NodeMetadata"
+                }
+              }
+            }
+          },
+          {
             "name": "authority",
             "type": {
               "option": "pubkey"
             }
           },
           {
-            "name": "max_size",
-            "type": "u32"
+            "name": "cluster_size",
+            "type": "u16"
           },
           {
             "name": "activation",
@@ -469,12 +524,6 @@
             }
           },
           {
-            "name": "mxes",
-            "type": {
-              "vec": "pubkey"
-            }
-          },
-          {
             "name": "nodes",
             "type": {
               "vec": {
@@ -487,10 +536,24 @@
           {
             "name": "pending_nodes",
             "type": {
-              "vec": {
-                "defined": {
-                  "name": "NodeRef"
-                }
+              "vec": "u32"
+            }
+          },
+          {
+            "name": "bls_public_key",
+            "type": {
+              "defined": {
+                "name": "SetUnset",
+                "generics": [
+                  {
+                    "kind": "type",
+                    "type": {
+                      "defined": {
+                        "name": "BN254G2BLSPublicKey"
+                      }
+                    }
+                  }
+                ]
               }
             }
           },
@@ -514,10 +577,6 @@
             "type": {
               "option": "pubkey"
             }
-          },
-          {
-            "name": "finalize_during_callback",
-            "type": "bool"
           },
           {
             "name": "cu_amount",
@@ -565,31 +624,6 @@
                 "name": "ComputationSignature"
               }
             }
-          }
-        ]
-      }
-    },
-    {
-      "name": "ComputationOutputs",
-      "generics": [
-        {
-          "kind": "type",
-          "name": "O"
-        }
-      ],
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "Success",
-            "fields": [
-              {
-                "generic": "O"
-              }
-            ]
-          },
-          {
-            "name": "Failure"
           }
         ]
       }
@@ -656,6 +690,12 @@
         "variants": [
           {
             "name": "MxeKeygen"
+          },
+          {
+            "name": "MxeKeyRecoveryInit"
+          },
+          {
+            "name": "MxeKeyRecoveryFinalize"
           }
         ]
       }
@@ -669,22 +709,44 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "authority",
-            "type": {
-              "option": "pubkey"
-            }
-          },
-          {
             "name": "cluster",
             "type": {
               "option": "u32"
             }
           },
           {
-            "name": "x25519_pubkey",
+            "name": "keygen_offset",
+            "type": "u64"
+          },
+          {
+            "name": "key_recovery_init_offset",
+            "type": "u64"
+          },
+          {
+            "name": "mxe_program_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "utility_pubkeys",
             "type": {
               "defined": {
-                "name": "X25519Pubkey"
+                "name": "SetUnset",
+                "generics": [
+                  {
+                    "kind": "type",
+                    "type": {
+                      "defined": {
+                        "name": "UtilityPubkeys"
+                      }
+                    }
+                  }
+                ]
               }
             }
           },
@@ -707,7 +769,65 @@
             }
           },
           {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "MxeStatus"
+              }
+            }
+          },
+          {
             "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MxeStatus",
+      "docs": [
+        "The status of an MXE."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Recovery"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NodeMetadata",
+      "docs": [
+        "location as [ISO 3166-1 alpha-2](https://www.iso.org/iso-3166-country-codes.html) country code"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ip",
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          },
+          {
+            "name": "peer_id",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "location",
             "type": "u8"
           }
         ]
@@ -808,10 +928,28 @@
             "name": "Ciphertext"
           },
           {
-            "name": "ArcisPubkey"
+            "name": "ArcisX25519Pubkey"
           },
           {
             "name": "PlaintextFloat"
+          },
+          {
+            "name": "PlaintextPoint"
+          },
+          {
+            "name": "PlaintextI8"
+          },
+          {
+            "name": "PlaintextI16"
+          },
+          {
+            "name": "PlaintextI32"
+          },
+          {
+            "name": "PlaintextI64"
+          },
+          {
+            "name": "PlaintextI128"
           }
         ]
       }
@@ -850,7 +988,7 @@
             "name": "Ciphertext"
           },
           {
-            "name": "ArcisPubkey"
+            "name": "ArcisX25519Pubkey"
           },
           {
             "name": "ArcisSignature"
@@ -859,10 +997,60 @@
             "name": "PlaintextFloat"
           },
           {
-            "name": "ManticoreAlgo"
+            "name": "PlaintextI8"
           },
           {
-            "name": "InputDataset"
+            "name": "PlaintextI16"
+          },
+          {
+            "name": "PlaintextI32"
+          },
+          {
+            "name": "PlaintextI64"
+          },
+          {
+            "name": "PlaintextI128"
+          },
+          {
+            "name": "PlaintextPoint"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SetUnset",
+      "docs": [
+        "Utility struct to store a value that needs to be set by a certain number of participants (keys",
+        "in our case). Once all participants have set the value, the value is considered set and we only",
+        "store it once."
+      ],
+      "generics": [
+        {
+          "kind": "type",
+          "name": "T"
+        }
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Set",
+            "fields": [
+              {
+                "generic": "T"
+              }
+            ]
+          },
+          {
+            "name": "Unset",
+            "fields": [
+              {
+                "generic": "T"
+              },
+              {
+                "vec": "bool"
+              }
+            ]
           }
         ]
       }
@@ -912,13 +1100,40 @@
       }
     },
     {
-      "name": "SignerAccount",
+      "name": "SignedComputationOutputs",
+      "generics": [
+        {
+          "kind": "type",
+          "name": "O"
+        }
+      ],
       "type": {
-        "kind": "struct",
-        "fields": [
+        "kind": "enum",
+        "variants": [
           {
-            "name": "bump",
-            "type": "u8"
+            "name": "Success",
+            "fields": [
+              {
+                "generic": "O"
+              },
+              {
+                "array": [
+                  "u8",
+                  64
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Failure"
+          },
+          {
+            "name": "MarkerForIdlBuildDoNotUseThis",
+            "fields": [
+              {
+                "generic": "O"
+              }
+            ]
           }
         ]
       }
@@ -986,34 +1201,45 @@
       }
     },
     {
-      "name": "X25519Pubkey",
+      "name": "UtilityPubkeys",
       "type": {
-        "kind": "enum",
-        "variants": [
+        "kind": "struct",
+        "fields": [
           {
-            "name": "Set",
-            "fields": [
-              {
-                "array": [
-                  "u8",
-                  32
-                ]
-              }
-            ]
+            "name": "x25519_pubkey",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
           },
           {
-            "name": "Unset",
-            "fields": [
-              {
-                "array": [
-                  "u8",
-                  32
-                ]
-              },
-              {
-                "vec": "bool"
-              }
-            ]
+            "name": "ed25519_verifying_key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "elgamal_pubkey",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "pubkey_validity_proof",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
           }
         ]
       }

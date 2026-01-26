@@ -85,8 +85,8 @@ npm start
 
 The Solana program is deployed on Devnet:
 
-- **Program ID:** `FGJU8MoGAm61LQNZekvMhacoVPzmvcjh16kXaTbqqbM6`
-- **Arcium Program ID:** `BKck65TgoKRokMjQM3datB9oRwJ8rAj2jxPXvHXUvcL6`
+- **Program ID:** `G6sRoE2RjEqgpX5Yzr3j4ogxQMLxUgW3uAV183cjpujm`
+- **Arcium Program ID:** `Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ`
 - **Cluster:** Devnet
 - **RPC:** Configured in `src/lib/program.ts`
 
