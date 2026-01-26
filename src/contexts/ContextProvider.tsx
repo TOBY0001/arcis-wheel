@@ -45,7 +45,7 @@ const DynamicWalletProvider = dynamic(
   () => Promise.resolve(ClientWalletProvider),
   {
     ssr: false,
-    loading: () => <div>Loading wallet...</div>
+    loading: () => null
   }
 );
 

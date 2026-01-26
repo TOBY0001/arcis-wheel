@@ -315,7 +315,7 @@ const Home = () => {
 				<div className="arcium-description">
 					<h3>About Arcium</h3>
 					<p>This is a demonstration of Arcium&apos;s confidential computing ability, through the private-randomisation of the wheel number outcomes.</p>
-					<p>What is Arcium? Arcium is the encrypted super computer, that you can use to add a layer of privacy to your applications, ranging from games, DeFi, machine learning apps etc.</p>
+					<p>What is Arcium? Arcium is the encrypted super computer, privacy can be added to any application.</p>
 				</div>
 			</div>
 			<div id="game-container">
@@ -369,7 +369,7 @@ const Home = () => {
 						Spin (Practice)
 					</button>
 				</div>
-				<div className="result-text">
+				<div className={`result-text ${publicKey ? 'wallet-connected' : ''}`}>
 					{publicKey ? `Welcome! Wallet connected: ${publicKey.toString().slice(0, 8)}...` : 'Connect your wallet to start playing!'}
 				</div>
 				<div className="leaderboard-section">

@@ -12,7 +12,7 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <>
       <Head>
-        <title>gMPC</title>
+        <title>arcis-wheel</title>
       </Head>
       <ContextProvider>
         <div className="flex flex-col h-screen">

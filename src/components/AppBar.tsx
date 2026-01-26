@@ -3,12 +3,30 @@ import React, { useState } from 'react';
 export const AppBar: React.FC = () => {
   const [open, setOpen] = useState(false);
   return (
-    <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: 'rgba(139, 92, 246, 0.1)' }}>
-      <h1 className="app-title" style={{ margin: 0 }}>gMPC</h1>
+    <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <h1 className="app-title" style={{ margin: 0 }}>arcis-wheel</h1>
       <div style={{ position: 'relative', textAlign: 'right' }}>
         <div
-          style={{ fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer', userSelect: 'none' }}
+          className="game-hub-trigger"
+          style={{ 
+            fontWeight: 'bold', 
+            fontSize: '1.1rem', 
+            cursor: 'pointer', 
+            userSelect: 'none',
+            padding: '8px 16px',
+            borderRadius: '10px',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            color: '#e0cfff'
+          }}
           onClick={() => setOpen((v) => !v)}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'transparent';
+            e.currentTarget.style.transform = 'translateY(0)';
+          }}
         >
           Game Hub
         </div>
