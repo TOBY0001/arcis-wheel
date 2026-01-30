@@ -34,6 +34,9 @@ body {
   padding: 20px;
   overflow-x: hidden;
   position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  touch-action: pan-y pinch-zoom;
 }
 
 body::before {
@@ -49,6 +52,7 @@ body::before {
   animation: backgroundShift 20s ease-in-out infinite alternate;
   pointer-events: none;
   z-index: 0;
+  will-change: transform, opacity;
 }
 
 @keyframes backgroundShift {
@@ -196,6 +200,7 @@ body::before {
   border-radius: 50%;
   background: radial-gradient(circle at center, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
   animation: containerPulse 4s ease-in-out infinite;
+  touch-action: none;
 }
 
 @keyframes containerPulse {
@@ -252,6 +257,7 @@ body::before {
     inset 0 0 30px rgba(139, 92, 246, 0.1);
   border: 4px solid rgba(139, 92, 246, 0.8);
   animation: wheelGlow 3s ease-in-out infinite alternate;
+  touch-action: none;
 }
 
 @keyframes wheelGlow {
@@ -577,11 +583,12 @@ button:disabled {
   gap: 8px;
 }
 
-.leaderboard-list {
-  max-height: 500px;
-  overflow-y: auto;
-  padding-right: 4px;
-}
+  .leaderboard-list {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
 
 .leaderboard-list::-webkit-scrollbar {
   width: 6px;
@@ -858,39 +865,62 @@ button:disabled {
 @media (max-width: 768px) {
   body {
     padding: 10px;
+    background-attachment: scroll !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body::before {
+    animation: none;
+    transform: none;
+    will-change: auto;
   }
 
   .main-layout {
     grid-template-columns: 1fr;
     gap: 16px;
     padding: 0 10px;
+    min-width: 0;
   }
 
   .left-panel {
     order: 1;
+    min-width: 0;
+    width: 100%;
   }
 
   #game-container {
     flex-direction: column;
     gap: 20px;
     order: 2;
+    width: 100%;
+    min-width: 0;
+    padding: 0 5px;
   }
 
   .wheel-container {
     width: 280px;
     height: 280px;
     margin: 0 auto;
+    animation: none;
+    will-change: transform;
+  }
+
+  .wheel-container::before {
+    animation: none;
   }
 
   #wheelCanvas {
     width: 280px;
     height: 280px;
+    animation: none;
+    will-change: transform;
   }
 
   .wheel-labels {
     width: 280px;
     height: 280px;
     clip-path: circle(50%);
+    will-change: transform;
   }
 
   .wheel-label {
@@ -909,25 +939,90 @@ button:disabled {
     order: 3;
     position: relative;
     top: 0;
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
   }
 
-  .claim-button, .spin-button {
+  .leaderboard-section:hover {
+    transform: none;
+  }
+
+  .claim-button, .spin-button, .spin-button-daily, .spin-button-unlimited {
     width: 100%;
     max-width: 200px;
     margin: 0 auto;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(139, 92, 246, 0.3);
+  }
+
+  .claim-button:active, .spin-button:active, .spin-button-daily:active, .spin-button-unlimited:active {
+    transform: scale(0.95);
   }
 
   .controls {
     flex-direction: column;
     gap: 10px;
+    width: 100%;
   }
 
   .profile-section {
     width: 100%;
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+  }
+
+  .profile-section:hover {
+    transform: none;
   }
 
   .points-display, .spin-limit-display {
     width: 100%;
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+  }
+
+  .points-display:hover, .spin-limit-display:hover {
+    transform: none;
+  }
+
+  .points-display::before {
+    animation: none;
+  }
+
+  .result-text {
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+  }
+
+  .result-text:hover {
+    transform: none;
+  }
+
+  .result-text::before {
+    animation: none;
+  }
+
+  .arcium-description {
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+  }
+
+  .arcium-description:hover {
+    transform: none;
+  }
+
+  .glow-orb {
+    display: none;
+  }
+
+  .game-title {
+    font-size: 28px;
+    letter-spacing: 2px;
+  }
+
+  button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(139, 92, 246, 0.3);
   }
 }
 
@@ -944,6 +1039,7 @@ button:disabled {
   .wheel-container {
     width: 240px;
     height: 240px;
+    padding: 15px;
   }
 
   #wheelCanvas {
@@ -971,8 +1067,9 @@ button:disabled {
   }
 
   .result-text {
-    font-size: 16px;
-    padding: 8px 16px;
+    font-size: 14px;
+    padding: 8px 12px;
+    min-height: 50px;
   }
 
   .profile-section {
@@ -981,6 +1078,26 @@ button:disabled {
 
   .leaderboard-section {
     padding: 15px;
+  }
+
+  .game-title {
+    font-size: 24px;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+  }
+
+  .points-value {
+    font-size: 32px;
+  }
+
+  .spin-limit-value {
+    font-size: 20px;
+  }
+
+  .controls button {
+    min-width: 120px;
+    padding: 14px 20px;
+    font-size: 13px;
   }
 }
 
@@ -1034,6 +1151,7 @@ button:disabled {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   contain: layout paint style;
+  touch-action: none;
 }
 
 .wheel-label {
@@ -1567,6 +1685,45 @@ header > div:last-child {
 /* Smooth scroll behavior */
 html {
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+}
+
+/* Prevent layout shifts on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Optimize rendering on mobile */
+@media (max-width: 768px) {
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Reduce animation complexity on mobile */
+  @keyframes backgroundShift {
+    0%, 100% {
+      opacity: 0.8;
+      transform: none;
+    }
+  }
+  
+  @keyframes containerPulse {
+    0%, 100% {
+      background: radial-gradient(circle at center, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+    }
+  }
+  
+  @keyframes wheelGlow {
+    0%, 100% {
+      box-shadow: 
+        0 0 60px rgba(139, 92, 246, 0.5),
+        0 0 100px rgba(139, 92, 246, 0.3),
+        inset 0 0 60px rgba(0, 0, 0, 0.4),
+        inset 0 0 30px rgba(139, 92, 246, 0.1);
+    }
+  }
 }
 
 /* Enhanced focus states for accessibility */
