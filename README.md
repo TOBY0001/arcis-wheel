@@ -27,7 +27,7 @@ Arcis Wheel is a decentralized wheel of fortune game that uses **Arcium's Multi-
 
 - **Frontend:** Next.js 14, React 18, TypeScript
 - **Blockchain:** Solana (Devnet)
-- **MPC:** Arcium v0.3.0
+- **MPC:** Arcium v0.6.4
 - **Wallet:** Solana Wallet Adapter
 - **Styling:** Tailwind CSS
 
