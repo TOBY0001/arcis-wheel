@@ -668,7 +668,7 @@ class SpinningWheelGame {
         const { AnchorProvider } = await import('@coral-xyz/anchor');
         const { Connection } = await import('@solana/web3.js');
         const connection = new Connection(
-          process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.devnet.solana.com'
+          process.env.NEXT_PUBLIC_SOLANA_RPC_HOST || 'https://api.devnet.solana.com'
         );
         const provider = new AnchorProvider(connection, this.wallet, { commitment: 'confirmed' });
         

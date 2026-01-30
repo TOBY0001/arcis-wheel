@@ -127,7 +127,7 @@ export function generateComputationOffset(): BN {
  * Get default RPC connection
  */
 export function getConnection(): Connection {
-  const rpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.devnet.solana.com';
+  const rpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC_HOST || 'https://api.devnet.solana.com';
   return new Connection(rpcUrl, 'confirmed');
 }
 
