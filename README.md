@@ -27,7 +27,7 @@ Arcis Wheel is a decentralized wheel of fortune game that uses **Arcium's Multi-
 
 - **Frontend:** Next.js 14, React 18, TypeScript
 - **Blockchain:** Solana (Devnet)
-- **MPC:** Arcium v0.6.4
+- **MPC:** Arcium v0.8.0
 - **Wallet:** Solana Wallet Adapter
 - **Styling:** Tailwind CSS
 
@@ -85,7 +85,7 @@ npm start
 
 The Solana program is deployed on Devnet:
 
-- **Program ID:** `G6sRoE2RjEqgpX5Yzr3j4ogxQMLxUgW3uAV183cjpujm`
+- **Program ID:** `BvRkheZC465X6PhhkHrkuUo1o7mHWF1d1tJm3kzts92o`
 - **Arcium Program ID:** `Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ`
 - **Cluster:** Devnet
 - **RPC:** Configured in `src/lib/program.ts`

@@ -1,5 +1,5 @@
 {
-  "address": "G6sRoE2RjEqgpX5Yzr3j4ogxQMLxUgW3uAV183cjpujm",
+  "address": "BvRkheZC465X6PhhkHrkuUo1o7mHWF1d1tJm3kzts92o",
   "metadata": {
     "name": "encrypted_wheel",
     "version": "0.1.0",
@@ -39,6 +39,14 @@
             "Can't check it here as it's not initialized yet."
           ],
           "writable": true
+        },
+        {
+          "name": "address_lookup_table",
+          "writable": true
+        },
+        {
+          "name": "lut_program",
+          "address": "AddressLookupTab1e1111111111111111111111111"
         },
         {
           "name": "arcium_program",
@@ -751,16 +759,8 @@
             }
           },
           {
-            "name": "fallback_clusters",
-            "type": {
-              "vec": "u32"
-            }
-          },
-          {
-            "name": "rejected_clusters",
-            "type": {
-              "vec": "u32"
-            }
+            "name": "lut_offset_slot",
+            "type": "u64"
           },
           {
             "name": "computation_definitions",

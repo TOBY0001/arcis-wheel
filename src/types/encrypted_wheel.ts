@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/encrypted_wheel.json`.
  */
 export type EncryptedWheel = {
-  "address": "G6sRoE2RjEqgpX5Yzr3j4ogxQMLxUgW3uAV183cjpujm",
+  "address": "BvRkheZC465X6PhhkHrkuUo1o7mHWF1d1tJm3kzts92o",
   "metadata": {
     "name": "encryptedWheel",
     "version": "0.1.0",
@@ -45,6 +45,14 @@ export type EncryptedWheel = {
             "Can't check it here as it's not initialized yet."
           ],
           "writable": true
+        },
+        {
+          "name": "addressLookupTable",
+          "writable": true
+        },
+        {
+          "name": "lutProgram",
+          "address": "AddressLookupTab1e1111111111111111111111111"
         },
         {
           "name": "arciumProgram",
@@ -757,16 +765,8 @@ export type EncryptedWheel = {
             }
           },
           {
-            "name": "fallbackClusters",
-            "type": {
-              "vec": "u32"
-            }
-          },
-          {
-            "name": "rejectedClusters",
-            "type": {
-              "vec": "u32"
-            }
+            "name": "lutOffsetSlot",
+            "type": "u64"
           },
           {
             "name": "computationDefinitions",

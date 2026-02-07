@@ -7,7 +7,7 @@ import IDL_JSON from '../idl/encrypted_wheel.json';
 const IDL = IDL_JSON as Idl;
 
 // Program ID deployed to devnet
-export const PROGRAM_ID = new PublicKey('G6sRoE2RjEqgpX5Yzr3j4ogxQMLxUgW3uAV183cjpujm');
+export const PROGRAM_ID = new PublicKey('BvRkheZC465X6PhhkHrkuUo1o7mHWF1d1tJm3kzts92o');
 
 // Arcium Program ID (v0.6.4)
 export const ARCIUM_PROGRAM_ID = new PublicKey('Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ');
