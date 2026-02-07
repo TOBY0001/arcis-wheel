@@ -375,6 +375,7 @@ const Home = () => {
 				<div className="leaderboard-section">
 					<h2>Leaderboard</h2>
 					<p className="leaderboard-reset-info">Weekly rankings/credits resets every Saturday</p>
+					<p className="leaderboard-reset-info">Only top players are displayed</p>
 					<div className="leaderboard-search">
 						<input type="text" placeholder="Search players..." />
 						<button className="search-clear">X</button>
